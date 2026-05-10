@@ -162,7 +162,7 @@ npm run sync
 
 ### Vercel
 
-Vercel sets `VERCEL=1` during build so the app uses **Nitro** (TanStack’s supported path there). **Root directory must be `frontend`.** Add the same env vars as in `.env.example`. Local check:
+Vercel sets `VERCEL=1` during build so the app uses **Nitro** (TanStack’s supported path there). **Root directory must be `frontend`** (so `npm install` runs in the folder that contains `vite` and `package-lock.json`). Add the same env vars as in `.env.example`. Build tools (`vite`, `nitro`, `@vitejs/plugin-react`) are listed under **`dependencies`** so installs that skip devDependencies still build. Local check:
 
 ```bash
 cd frontend && npm run build:vercel
