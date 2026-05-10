@@ -36,8 +36,7 @@ export const VOCA_TOOLS = [
           amount: { type: "number", description: "Amount of from_token in human units" },
           confirmed: {
             type: "boolean",
-            description:
-              "Set true ONLY after the user explicitly says yes. False to just quote.",
+            description: "Set true ONLY after the user explicitly says yes. False to just quote.",
           },
         },
         required: ["from_token", "to_token", "amount", "confirmed"],
@@ -60,7 +59,8 @@ export const VOCA_TOOLS = [
           amount: { type: "number", description: "Human amount (e.g. SOL count, or USDC units)" },
           recipient: {
             type: "string",
-            description: "Full Solana base58 pubkey; may have been sent alone in the latest user message while send was already in progress.",
+            description:
+              "Full Solana base58 pubkey; may have been sent alone in the latest user message while send was already in progress.",
           },
           confirmed: {
             type: "boolean",
@@ -73,8 +73,4 @@ export const VOCA_TOOLS = [
   },
 ] as const;
 
-export type ToolName =
-  | "get_balance"
-  | "get_token_price"
-  | "swap_tokens"
-  | "send_token";
+export type ToolName = "get_balance" | "get_token_price" | "swap_tokens" | "send_token";

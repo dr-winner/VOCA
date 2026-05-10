@@ -64,7 +64,13 @@ export function useVocaChain(): VocaChainState {
     return () => {
       cancelled = true;
     };
-  }, [connection, anchorWallet, publicKey, auth?.toBase58() ?? "", nonce === null ? "" : nonce.toString()]);
+  }, [
+    connection,
+    anchorWallet,
+    publicKey,
+    auth?.toBase58() ?? "",
+    nonce === null ? "" : nonce.toString(),
+  ]);
 
   return { envConfigured, configStatus, agentLine };
 }

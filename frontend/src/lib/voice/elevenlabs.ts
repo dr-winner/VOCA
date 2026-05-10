@@ -28,7 +28,12 @@ export class ElevenLabsTTS {
         ws.send(
           JSON.stringify({
             text: " ",
-            voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true },
+            voice_settings: {
+              stability: 0.5,
+              similarity_boost: 0.8,
+              style: 0.2,
+              use_speaker_boost: true,
+            },
             generation_config: { chunk_length_schedule: [50, 90, 140, 200] },
             xi_api_key: this.apiKey,
           }),

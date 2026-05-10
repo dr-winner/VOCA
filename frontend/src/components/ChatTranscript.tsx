@@ -4,8 +4,7 @@ import { useEffect, useRef } from "react";
 import { useVocaStore, type ChatMessage } from "@/lib/store";
 import { stripLeakedToolXml } from "@/lib/chat-sanitize";
 
-const explorer = (sig: string) =>
-  `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
+const explorer = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
 
 function TxCard({ m }: { m: ChatMessage }) {
   if (!m.tx) return null;
@@ -60,7 +59,9 @@ export function ChatTranscript() {
   return (
     <div className="glass rounded-3xl p-5 h-[40vh] md:h-[44vh]">
       <div className="flex items-center justify-between gap-2 mb-3">
-        <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Conversation</div>
+        <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          Conversation
+        </div>
         {messages.length > 0 && (
           <button
             type="button"
@@ -78,12 +79,8 @@ export function ChatTranscript() {
           <div className="h-full grid place-items-center text-center text-sm text-muted-foreground">
             <div>
               <p>Tap the mic and try:</p>
-              <p className="mt-2 font-display text-foreground/80 italic">
-                "What's my balance?"
-              </p>
-              <p className="font-display text-foreground/80 italic">
-                "Swap 0.1 SOL to USDC"
-              </p>
+              <p className="mt-2 font-display text-foreground/80 italic">"What's my balance?"</p>
+              <p className="font-display text-foreground/80 italic">"Swap 0.1 SOL to USDC"</p>
             </div>
           </div>
         )}

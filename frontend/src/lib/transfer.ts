@@ -42,9 +42,7 @@ export async function buildAndSendTransfer(
     try {
       await getAccount(connection, toAta);
     } catch {
-      instructions.push(
-        createAssociatedTokenAccountInstruction(payer, toAta, to, mint),
-      );
+      instructions.push(createAssociatedTokenAccountInstruction(payer, toAta, to, mint));
     }
     instructions.push(
       createTransferInstruction(

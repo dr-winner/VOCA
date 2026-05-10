@@ -71,7 +71,11 @@ export async function executeSwap(
   const sig = await connection.sendRawTransaction(signed.serialize(), { maxRetries: 3 });
   const latest = await connection.getLatestBlockhash();
   await connection.confirmTransaction(
-    { signature: sig, blockhash: latest.blockhash, lastValidBlockHeight: latest.lastValidBlockHeight },
+    {
+      signature: sig,
+      blockhash: latest.blockhash,
+      lastValidBlockHeight: latest.lastValidBlockHeight,
+    },
     "confirmed",
   );
   return sig;

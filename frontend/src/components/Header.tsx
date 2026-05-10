@@ -12,7 +12,9 @@ export function Header() {
           </div>
           <div className="flex items-baseline gap-2">
             <h1 className="text-xl font-display font-semibold tracking-tight">VOCA</h1>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">voice · solana</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              voice · solana
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-3">

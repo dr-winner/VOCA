@@ -9,10 +9,7 @@ import { resolveSolanaRpcUrl } from "@/lib/solana-cluster";
 const RPC = resolveSolanaRpcUrl();
 
 export function WalletProviders({ children }: { children: React.ReactNode }) {
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    [],
-  );
+  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], []);
   return (
     <ConnectionProvider endpoint={RPC}>
       <WalletProvider wallets={wallets} autoConnect>

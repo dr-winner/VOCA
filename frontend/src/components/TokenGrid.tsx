@@ -28,7 +28,10 @@ export function TokenGrid() {
             <div className="flex items-center gap-2.5">
               <div
                 className="size-9 rounded-full grid place-items-center text-xs font-bold"
-                style={{ background: `${meta?.color ?? "#6366F1"}22`, color: meta?.color ?? "#fff" }}
+                style={{
+                  background: `${meta?.color ?? "#6366F1"}22`,
+                  color: meta?.color ?? "#fff",
+                }}
               >
                 {h.symbol.slice(0, 3)}
               </div>
@@ -41,7 +44,9 @@ export function TokenGrid() {
               {h.amount.toLocaleString(undefined, { maximumFractionDigits: 4 })}
             </p>
             <p className="text-xs text-muted-foreground">
-              {usd !== null ? `$${usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : "—"}
+              {usd !== null
+                ? `$${usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                : "—"}
             </p>
           </motion.div>
         );

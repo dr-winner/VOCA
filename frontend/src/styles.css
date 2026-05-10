@@ -97,8 +97,11 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html, body {
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
@@ -107,10 +110,16 @@
   body {
     background-image:
       radial-gradient(1200px 600px at 10% -10%, oklch(0.65 0.21 275 / 0.18), transparent 60%),
-      radial-gradient(800px 500px at 100% 0%, oklch(0.7 0.18 195 / 0.10), transparent 60%);
+      radial-gradient(800px 500px at 100% 0%, oklch(0.7 0.18 195 / 0.1), transparent 60%);
     background-attachment: fixed;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer utilities {
@@ -119,7 +128,9 @@
     backdrop-filter: blur(14px);
     border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
   }
-  .glow-primary { box-shadow: 0 0 60px -10px var(--primary-glow); }
+  .glow-primary {
+    box-shadow: 0 0 60px -10px var(--primary-glow);
+  }
   .text-gradient {
     background: linear-gradient(135deg, oklch(0.97 0.005 270), oklch(0.7 0.18 195));
     -webkit-background-clip: text;
@@ -129,9 +140,28 @@
 }
 
 /* Wallet adapter modal: theme to match VOCA */
-.wallet-adapter-modal-wrapper { background: var(--surface) !important; border: 1px solid var(--border); border-radius: var(--radius-lg); }
-.wallet-adapter-modal-title { color: var(--foreground) !important; font-family: var(--font-display); }
-.wallet-adapter-modal-list .wallet-adapter-button { background: var(--elevated) !important; }
-.wallet-adapter-button { background: var(--primary) !important; color: var(--primary-foreground) !important; font-family: var(--font-sans) !important; border-radius: 0.625rem !important; height: 40px !important; }
-.wallet-adapter-button:not([disabled]):hover { background: oklch(0.7 0.21 275) !important; }
-.wallet-adapter-modal-overlay { background: oklch(0.05 0.01 270 / 0.7) !important; }
+.wallet-adapter-modal-wrapper {
+  background: var(--surface) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.wallet-adapter-modal-title {
+  color: var(--foreground) !important;
+  font-family: var(--font-display);
+}
+.wallet-adapter-modal-list .wallet-adapter-button {
+  background: var(--elevated) !important;
+}
+.wallet-adapter-button {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  font-family: var(--font-sans) !important;
+  border-radius: 0.625rem !important;
+  height: 40px !important;
+}
+.wallet-adapter-button:not([disabled]):hover {
+  background: oklch(0.7 0.21 275) !important;
+}
+.wallet-adapter-modal-overlay {
+  background: oklch(0.05 0.01 270 / 0.7) !important;
+}

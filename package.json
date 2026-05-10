@@ -6,6 +6,7 @@
     "sync": "node scripts/sync.mjs",
     "dev": "npm run dev --prefix frontend",
     "build": "npm run build --prefix frontend",
+    "ci": "npm run ci --prefix frontend",
     "build:contracts": "cd contracts && anchor build",
     "sync:all": "npm run build:contracts && npm run sync"
   }

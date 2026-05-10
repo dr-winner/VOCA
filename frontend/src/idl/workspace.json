@@ -9,16 +9,7 @@
   "instructions": [
     {
       "name": "deactivate_agent",
-      "discriminator": [
-        205,
-        171,
-        239,
-        225,
-        82,
-        126,
-        96,
-        166
-      ],
+      "discriminator": [205, 171, 239, 225, 82, 126, 96, 166],
       "accounts": [
         {
           "name": "agent",
@@ -27,13 +18,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  97,
-                  103,
-                  101,
-                  110,
-                  116
-                ]
+                "value": [97, 103, 101, 110, 116]
               },
               {
                 "kind": "account",
@@ -57,16 +42,7 @@
     },
     {
       "name": "initialize_config",
-      "discriminator": [
-        208,
-        127,
-        21,
-        1,
-        194,
-        190,
-        196,
-        70
-      ],
+      "discriminator": [208, 127, 21, 1, 194, 190, 196, 70],
       "accounts": [
         {
           "name": "config",
@@ -75,14 +51,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
+                "value": [99, 111, 110, 102, 105, 103]
               },
               {
                 "kind": "account",
@@ -118,16 +87,7 @@
     },
     {
       "name": "log_interaction",
-      "discriminator": [
-        84,
-        149,
-        144,
-        32,
-        114,
-        222,
-        76,
-        188
-      ],
+      "discriminator": [84, 149, 144, 32, 114, 222, 76, 188],
       "accounts": [
         {
           "name": "config",
@@ -136,14 +96,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
+                "value": [99, 111, 110, 102, 105, 103]
               },
               {
                 "kind": "account",
@@ -160,13 +113,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  97,
-                  103,
-                  101,
-                  110,
-                  116
-                ]
+                "value": [97, 103, 101, 110, 116]
               },
               {
                 "kind": "account",
@@ -187,19 +134,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  105,
-                  110,
-                  116,
-                  101,
-                  114,
-                  97,
-                  99,
-                  116,
-                  105,
-                  111,
-                  110
-                ]
+                "value": [105, 110, 116, 101, 114, 97, 99, 116, 105, 111, 110]
               },
               {
                 "kind": "account",
@@ -238,26 +173,14 @@
         {
           "name": "description_hash",
           "type": {
-            "array": [
-              "u8",
-              32
-            ]
+            "array": ["u8", 32]
           }
         }
       ]
     },
     {
       "name": "reactivate_agent",
-      "discriminator": [
-        231,
-        7,
-        179,
-        97,
-        210,
-        24,
-        209,
-        12
-      ],
+      "discriminator": [231, 7, 179, 97, 210, 24, 209, 12],
       "accounts": [
         {
           "name": "config",
@@ -265,14 +188,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
+                "value": [99, 111, 110, 102, 105, 103]
               },
               {
                 "kind": "account",
@@ -289,13 +205,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  97,
-                  103,
-                  101,
-                  110,
-                  116
-                ]
+                "value": [97, 103, 101, 110, 116]
               },
               {
                 "kind": "account",
@@ -319,16 +229,7 @@
     },
     {
       "name": "register_agent",
-      "discriminator": [
-        135,
-        157,
-        66,
-        195,
-        2,
-        113,
-        175,
-        30
-      ],
+      "discriminator": [135, 157, 66, 195, 2, 113, 175, 30],
       "accounts": [
         {
           "name": "config",
@@ -337,14 +238,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
+                "value": [99, 111, 110, 102, 105, 103]
               },
               {
                 "kind": "account",
@@ -361,13 +255,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  97,
-                  103,
-                  101,
-                  110,
-                  116
-                ]
+                "value": [97, 103, 101, 110, 116]
               },
               {
                 "kind": "account",
@@ -402,10 +290,7 @@
         {
           "name": "personality_hash",
           "type": {
-            "array": [
-              "u8",
-              32
-            ]
+            "array": ["u8", 32]
           }
         },
         {
@@ -420,16 +305,7 @@
     },
     {
       "name": "update_agent",
-      "discriminator": [
-        85,
-        2,
-        178,
-        9,
-        119,
-        139,
-        102,
-        164
-      ],
+      "discriminator": [85, 2, 178, 9, 119, 139, 102, 164],
       "accounts": [
         {
           "name": "agent",
@@ -438,13 +314,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  97,
-                  103,
-                  101,
-                  110,
-                  116
-                ]
+                "value": [97, 103, 101, 110, 116]
               },
               {
                 "kind": "account",
@@ -472,10 +342,7 @@
         {
           "name": "personality_hash",
           "type": {
-            "array": [
-              "u8",
-              32
-            ]
+            "array": ["u8", 32]
           }
         },
         {
@@ -490,16 +357,7 @@
     },
     {
       "name": "update_config",
-      "discriminator": [
-        29,
-        158,
-        252,
-        191,
-        10,
-        83,
-        219,
-        99
-      ],
+      "discriminator": [29, 158, 252, 191, 10, 83, 219, 99],
       "accounts": [
         {
           "name": "config",
@@ -508,14 +366,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
-                ]
+                "value": [99, 111, 110, 102, 105, 103]
               },
               {
                 "kind": "account",
@@ -528,9 +379,7 @@
           "name": "authority",
           "writable": true,
           "signer": true,
-          "relations": [
-            "config"
-          ]
+          "relations": ["config"]
         }
       ],
       "args": [
@@ -556,42 +405,15 @@
   "accounts": [
     {
       "name": "Agent",
-      "discriminator": [
-        47,
-        166,
-        112,
-        147,
-        155,
-        197,
-        86,
-        7
-      ]
+      "discriminator": [47, 166, 112, 147, 155, 197, 86, 7]
     },
     {
       "name": "Config",
-      "discriminator": [
-        155,
-        12,
-        170,
-        224,
-        30,
-        250,
-        204,
-        130
-      ]
+      "discriminator": [155, 12, 170, 224, 30, 250, 204, 130]
     },
     {
       "name": "Interaction",
-      "discriminator": [
-        194,
-        124,
-        204,
-        14,
-        165,
-        190,
-        70,
-        130
-      ]
+      "discriminator": [194, 124, 204, 14, 165, 190, 70, 130]
     }
   ],
   "errors": [
@@ -666,10 +488,7 @@
           {
             "name": "personality_hash",
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {
@@ -787,10 +606,7 @@
           {
             "name": "description_hash",
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {

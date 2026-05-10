@@ -6,7 +6,11 @@ export function findConfigPda(programId: PublicKey, authority: PublicKey): [Publ
   return PublicKey.findProgramAddressSync([Buffer.from("config"), authority.toBuffer()], programId);
 }
 
-export function findAgentPda(programId: PublicKey, owner: PublicKey, agentNonce: BN): [PublicKey, number] {
+export function findAgentPda(
+  programId: PublicKey,
+  owner: PublicKey,
+  agentNonce: BN,
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [Buffer.from("agent"), owner.toBuffer(), agentNonce.toArrayLike(Buffer, "le", 8)],
     programId,

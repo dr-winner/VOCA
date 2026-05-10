@@ -10,10 +10,7 @@ export type Holding = {
   usd?: number;
 };
 
-export async function fetchHoldings(
-  connection: Connection,
-  owner: PublicKey,
-): Promise<Holding[]> {
+export async function fetchHoldings(connection: Connection, owner: PublicKey): Promise<Holding[]> {
   const out: Holding[] = [];
   const lamports = await connection.getBalance(owner);
   out.push({
@@ -27,10 +24,11 @@ export async function fetchHoldings(
     programId: TOKEN_PROGRAM_ID,
   });
 
+  type ParsedSplTokenInfo = { mint?: string; tokenAmount?: { uiAmount?: number | null } };
   for (const { account } of resp.value) {
-    const info: any = account.data.parsed?.info;
-    if (!info) continue;
-    const mint = info.mint as string;
+    const info = account.data.parsed?.info as ParsedSplTokenInfo | undefined;
+    if (!info?.mint) continue;
+    const mint = info.mint;
     const amount = Number(info.tokenAmount?.uiAmount ?? 0);
     if (!amount) continue;
     const known = tokenByMint(mint);

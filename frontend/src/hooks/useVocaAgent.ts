@@ -15,6 +15,15 @@ import { tryLogVocaSend, tryLogVocaSwap } from "@/lib/voca/interaction-log";
 import { stripLeakedToolXml } from "@/lib/chat-sanitize";
 import { agentChatSession } from "@/lib/agent-chat-session";
 
+function asToolArgs(v: unknown): Record<string, unknown> {
+  if (v !== null && typeof v === "object" && !Array.isArray(v)) return v as Record<string, unknown>;
+  return {};
+}
+
+function errMessage(e: unknown, fallback: string): string {
+  return e instanceof Error ? e.message : fallback;
+}
+
 export function useVocaAgent() {
   const { connection } = useConnection();
   const wallet = useWallet();
@@ -44,9 +53,10 @@ export function useVocaAgent() {
 
   // Run a tool call client-side
   const runTool = useCallback(
-    async (name: string, args: any): Promise<string> => {
+    async (name: string, args: unknown): Promise<string> => {
       if (!wallet.publicKey) return JSON.stringify({ error: "Wallet not connected" });
       const owner = wallet.publicKey;
+      const a = asToolArgs(args);
 
       if (name === "get_balance") {
         const holdings = await fetchHoldings(connection, owner);
@@ -62,14 +72,19 @@ export function useVocaAgent() {
       }
 
       if (name === "get_token_price") {
-        const sym = String(args.token_symbol).toUpperCase();
+        const sym = String(a.token_symbol ?? "").toUpperCase();
         const prices = await getPrices([sym]);
         const price = prices[sym];
-        return JSON.stringify(price ? { symbol: sym, usd: price } : { error: `No price for ${sym}` });
+        return JSON.stringify(
+          price ? { symbol: sym, usd: price } : { error: `No price for ${sym}` },
+        );
       }
 
       if (name === "swap_tokens") {
-        const { from_token, to_token, amount, confirmed } = args;
+        const from_token = String(a.from_token ?? "");
+        const to_token = String(a.to_token ?? "");
+        const amount = Number(a.amount);
+        const confirmed = Boolean(a.confirmed);
         const quote = await getSwapQuote(from_token, to_token, Number(amount));
         if (!confirmed) {
           return JSON.stringify({
@@ -111,13 +126,16 @@ export function useVocaAgent() {
             });
           }
           return JSON.stringify({ success: true, signature: sig, received: quote.outAmount });
-        } catch (e: any) {
-          return JSON.stringify({ error: e?.message ?? "swap failed" });
+        } catch (e: unknown) {
+          return JSON.stringify({ error: errMessage(e, "swap failed") });
         }
       }
 
       if (name === "send_token") {
-        const { token_symbol, amount, recipient, confirmed } = args;
+        const token_symbol = String(a.token_symbol ?? "");
+        const amount = Number(a.amount);
+        const recipient = String(a.recipient ?? "");
+        const confirmed = Boolean(a.confirmed);
         if (!lookupToken(token_symbol)) return JSON.stringify({ error: "Unknown token" });
         let recipientPk: string;
         try {
@@ -148,7 +166,13 @@ export function useVocaAgent() {
           addMessage({
             role: "tx",
             text: `Sent ${amount} ${token_symbol} to ${recipientPk.slice(0, 4)}...${recipientPk.slice(-4)}`,
-            tx: { kind: "send", fromSymbol: token_symbol, fromAmount: Number(amount), recipient: recipientPk, signature: sig },
+            tx: {
+              kind: "send",
+              fromSymbol: token_symbol,
+              fromAmount: Number(amount),
+              recipient: recipientPk,
+              signature: sig,
+            },
           });
           if (anchorWallet) {
             void tryLogVocaSend({
@@ -161,8 +185,8 @@ export function useVocaAgent() {
             });
           }
           return JSON.stringify({ success: true, signature: sig });
-        } catch (e: any) {
-          return JSON.stringify({ error: e?.message ?? "send failed" });
+        } catch (e: unknown) {
+          return JSON.stringify({ error: errMessage(e, "send failed") });
         }
       }
 
@@ -172,37 +196,34 @@ export function useVocaAgent() {
   );
 
   // Streaming TTS sentence buffering
-  const speakStream = useCallback(
-    async () => {
-      const tts = await ensureTTS();
-      let pending = "";
-      const flushIfReady = (force = false) => {
-        const sentenceMatch = pending.match(/^(.+?[.!?,])\s/);
-        if (sentenceMatch) {
-          tts.streamText(sentenceMatch[1] + " ");
-          pending = pending.slice(sentenceMatch[0].length);
-          return true;
-        }
-        if (force && pending.trim()) {
-          tts.streamText(pending + " ");
-          pending = "";
-          return true;
-        }
-        return false;
-      };
-      return {
-        push: (t: string) => {
-          pending += t;
-          while (flushIfReady());
-        },
-        done: () => {
-          flushIfReady(true);
-          tts.endOfInput();
-        },
-      };
-    },
-    [ensureTTS],
-  );
+  const speakStream = useCallback(async () => {
+    const tts = await ensureTTS();
+    let pending = "";
+    const flushIfReady = (force = false) => {
+      const sentenceMatch = pending.match(/^(.+?[.!?,])\s/);
+      if (sentenceMatch) {
+        tts.streamText(sentenceMatch[1] + " ");
+        pending = pending.slice(sentenceMatch[0].length);
+        return true;
+      }
+      if (force && pending.trim()) {
+        tts.streamText(pending + " ");
+        pending = "";
+        return true;
+      }
+      return false;
+    };
+    return {
+      push: (t: string) => {
+        pending += t;
+        while (flushIfReady());
+      },
+      done: () => {
+        flushIfReady(true);
+        tts.endOfInput();
+      },
+    };
+  }, [ensureTTS]);
 
   const runConversation = useCallback(
     async (assistantMsgId: string) => {
@@ -251,8 +272,12 @@ export function useVocaAgent() {
         // Execute tools
         setStatus("executing");
         for (const tc of toolCalls) {
-          let parsed: any = {};
-          try { parsed = JSON.parse(tc.args || "{}"); } catch { /* */ }
+          let parsed: Record<string, unknown> = {};
+          try {
+            parsed = asToolArgs(JSON.parse(tc.args || "{}"));
+          } catch {
+            /* */
+          }
           const result = await runTool(tc.name, parsed);
           agentChatSession.turns.push({
             role: "tool",
@@ -275,10 +300,12 @@ export function useVocaAgent() {
       const assistantId = addMessage({ role: "assistant", text: "" });
       try {
         await runConversation(assistantId);
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error(e);
-        toast.error(e?.message ?? "Something went wrong");
-        updateMessage(assistantId, { text: "Sorry, that didn't go through. Want me to try again?" });
+        toast.error(errMessage(e, "Something went wrong"));
+        updateMessage(assistantId, {
+          text: "Sorry, that didn't go through. Want me to try again?",
+        });
         setStatus("error");
         setTimeout(() => setStatus("idle"), 1500);
       }
@@ -305,7 +332,7 @@ export function useVocaAgent() {
         const { text } = await res.json();
         if (text?.trim()) await submitText(text);
         else setStatus("idle");
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error(e);
         toast.error("Couldn't hear that — try again?");
         setStatus("idle");
@@ -318,7 +345,12 @@ export function useVocaAgent() {
     await recorder.stopRecording();
   }, [recorder]);
 
-  useEffect(() => () => { ttsRef.current?.disconnect(); }, []);
+  useEffect(
+    () => () => {
+      ttsRef.current?.disconnect();
+    },
+    [],
+  );
 
   return { startListening, stopListening, submitText, isRecording: recorder.isRecording };
 }

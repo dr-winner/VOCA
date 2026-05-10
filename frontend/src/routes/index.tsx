@@ -27,7 +27,13 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <ClientGate>
-      <Suspense fallback={<div className="min-h-screen grid place-items-center text-muted-foreground">Loading VOCA…</div>}>
+      <Suspense
+        fallback={
+          <div className="min-h-screen grid place-items-center text-muted-foreground">
+            Loading VOCA…
+          </div>
+        }
+      >
         <App />
       </Suspense>
     </ClientGate>

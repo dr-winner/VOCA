@@ -20,11 +20,16 @@ export const Route = createFileRoute("/api/voca-config")({
           },
           voca: {
             programIdOverride: readEnv("VITE_VOCA_PROGRAM_ID", "VOCA_PROGRAM_ID") ?? null,
-            configAuthoritySet: Boolean(readEnv("VITE_VOCA_CONFIG_AUTHORITY", "VOCA_CONFIG_AUTHORITY")),
+            configAuthoritySet: Boolean(
+              readEnv("VITE_VOCA_CONFIG_AUTHORITY", "VOCA_CONFIG_AUTHORITY"),
+            ),
             agentNonceSet: Boolean(readEnv("VITE_VOCA_AGENT_NONCE", "VOCA_AGENT_NONCE")),
           },
           tokens: {
-            mintPack: readEnv("VITE_MAINNET_TOKEN_MINTS", "MAINNET_TOKEN_MINTS") === "1" ? "mainnet" : "devnet-usdc",
+            mintPack:
+              readEnv("VITE_MAINNET_TOKEN_MINTS", "MAINNET_TOKEN_MINTS") === "1"
+                ? "mainnet"
+                : "devnet-usdc",
           },
         });
       },
