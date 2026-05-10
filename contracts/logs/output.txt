@@ -1,0 +1,46 @@
+    Finished `release` profile [optimized] target(s) in 0.26s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.10s
+     Running unittests src/lib.rs (/69fed57cbe9241901c1cfaf2/target/debug/deps/workspace-51ba4ba41e55366b)
+
+Found a 'test' script in the Anchor.toml. Running it as a test suite!
+
+Running test suite: "/69fed57cbe9241901c1cfaf2/Anchor.toml"
+
+yarn run v1.22.22
+$ /69fed57cbe9241901c1cfaf2/node_modules/.bin/ts-mocha -p ./tsconfig.json -t 1000000 'tests/**/*.ts'
+
+
+  VOCA Agent Program
+    ✔ Initialize Config (406ms)
+    ✔ Register Agent for User1 (408ms)
+    ✔ Register Agent for User2 (406ms)
+    ✔ Log Interaction - Balance Check (action_type=0) (402ms)
+    ✔ Log Interaction - Swap (action_type=1) with spending limit (407ms)
+    ✔ Log Interaction - Transfer (action_type=2) (404ms)
+    ✔ Fails when exceeding per-transaction spending limit
+    1) Fails when exceeding daily spending limit
+    ✔ Update Agent settings (364ms)
+    ✔ Deactivate Agent (403ms)
+    ✔ Fails to log interaction on deactivated agent
+    ✔ Reactivate Agent (393ms)
+    ✔ Update Config (404ms)
+    ✔ Fails unauthorized update config
+    ✔ Pause config blocks new agent registration (786ms)
+    ✔ Config tracks total interactions correctly
+
+
+  15 passing (6s)
+  1 failing
+
+  1) VOCA Agent Program
+       Fails when exceeding daily spending limit:
+     AssertionError: expected 'AnchorError thrown in programs/worksp…' to include 'DailyLimitExceeded'
+      at /69fed57cbe9241901c1cfaf2/tests/workspace.ts:285:32
+      at Generator.throw (<anonymous>)
+      at rejected (tests/workspace.ts:39:65)
+      at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+
+
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

@@ -1,0 +1,17 @@
+# =============================================================================
+# Wrangler / Cloudflare Worker — copy to `.dev.vars` (gitignored)
+# =============================================================================
+# Same secrets as `.env` for deployed or `wrangler dev` API routes.
+# =============================================================================
+
+GROQ_API_KEY=
+ELEVENLABS_API_KEY=
+ELEVENLABS_VOICE_ID=
+
+# Optional Solana / VOCA (worker-side readEnv)
+# SOLANA_RPC_URL=
+# USE_LOCAL_SOLANA=
+# VOCA_PROGRAM_ID=
+# VOCA_CONFIG_AUTHORITY=
+# VOCA_AGENT_NONCE=
+# MAINNET_TOKEN_MINTS=
