@@ -162,7 +162,25 @@ npm run sync
 
 ### Vercel
 
-Vercel sets `VERCEL=1` during build so the app uses **Nitro** (TanStack’s supported path there). **Root directory must be `frontend`** (so `npm install` runs in the folder that contains `vite` and `package-lock.json`). The repo includes **`frontend/vercel.json`** with explicit `installCommand` / `buildCommand`. If a deploy still can’t find Vite, use **Redeploy → clear build cache**. Add the same env vars as in `.env.example`. Build tools (`vite`, `nitro`, `@vitejs/plugin-react`) are **`dependencies`**. Local check:
+Vercel sets `VERCEL=1` during build so the app uses **Nitro** (TanStack’s supported path there). The repo has **`frontend/vercel.json`** (`npm install` + `npm run build`). Add the same env vars as in `.env.example`. Build tools (`vite`, `nitro`, `@vitejs/plugin-react`) are **`dependencies`**.
+
+**Git → Vercel (dashboard):** set **Root Directory** to **`frontend`**. If builds act weird, **Redeploy → clear build cache**.
+
+**Vercel CLI (recommended to avoid root-directory mistakes):** the CLI uses **the folder you run it from** as the project root, so you always install and build where `package.json` and `vite` live.
+
+```bash
+cd frontend
+npm install
+npm run vercel:link          # once: attach this folder to your Vercel project
+npm run vercel:deploy        # preview URL
+npm run vercel:deploy:prod   # production
+```
+
+From the **repo root** you can also run `npm run vercel:deploy:prod` (forwards into `frontend/`). Pull env vars into a local file (optional): `cd frontend && npm run vercel:env` (writes `.env.local`, ignored by `*.local`—copy into `.env` if you want Vite to load them the same way as dev).
+
+Reproduce Vercel’s builder locally: `cd frontend && npm run vercel:build`.
+
+Sanity check without the CLI:
 
 ```bash
 cd frontend && npm run build:vercel

@@ -14,7 +14,12 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "ci": "npm run lint && npm run build"
+    "ci": "npm run lint && npm run build",
+    "vercel:link": "npx vercel@latest link",
+    "vercel:build": "npx vercel@latest build",
+    "vercel:deploy": "npx vercel@latest",
+    "vercel:deploy:prod": "npx vercel@latest --prod",
+    "vercel:env": "npx vercel@latest env pull .env.local"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",

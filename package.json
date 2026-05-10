@@ -7,6 +7,9 @@
     "dev": "npm run dev --prefix frontend",
     "build": "npm run build --prefix frontend",
     "ci": "npm run ci --prefix frontend",
+    "vercel:deploy": "npm run vercel:deploy --prefix frontend",
+    "vercel:deploy:prod": "npm run vercel:deploy:prod --prefix frontend",
+    "vercel:build": "npm run vercel:build --prefix frontend",
     "build:contracts": "cd contracts && anchor build",
     "sync:all": "npm run build:contracts && npm run sync"
   }
