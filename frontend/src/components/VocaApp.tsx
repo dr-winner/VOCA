@@ -28,7 +28,7 @@ export default function VocaApp() {
           </div>
         </main>
         <footer className="text-center text-[11px] text-muted-foreground/60 py-4">
-          Hackathon demo · {cluster} · Jupiter · Groq · ElevenLabs
+          VOCA · {cluster} · Jupiter · Groq · ElevenLabs
         </footer>
       </div>
       <Toaster theme="dark" richColors position="top-center" />
