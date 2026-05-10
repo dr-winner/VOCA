@@ -6,11 +6,12 @@
   "scripts": {
     "sync-contracts": "node ../scripts/sync.mjs",
     "env:init": "node -e \"import fs from 'node:fs'; fs.existsSync('.env') ? console.log('.env already exists') : (fs.copyFileSync('.env.example', '.env'), console.log('Created .env from .env.example'));\"",
-    "dev": "node ./node_modules/vite/bin/vite.js dev",
-    "build": "node ./node_modules/vite/bin/vite.js build",
-    "build:vercel": "VERCEL=1 node ./node_modules/vite/bin/vite.js build",
-    "build:dev": "node ./node_modules/vite/bin/vite.js build --mode development",
-    "preview": "node ./node_modules/vite/bin/vite.js preview",
+    "postinstall": "node ./scripts/verify-vite.mjs",
+    "dev": "vite dev",
+    "build": "vite build",
+    "build:vercel": "VERCEL=1 vite build",
+    "build:dev": "vite build --mode development",
+    "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
     "ci": "npm run lint && npm run build"
