@@ -1,68 +1,193 @@
+<div align="center">
+
 # VOCA
 
-You shouldn’t need a second monitor and a steady hand to move your own money.
+### Talk to your wallet. It talks back.
 
-Crypto apps still behave like trading terminals: tiny numbers, long addresses, half a dozen taps to do something your mouth could describe in five seconds. VOCA is the opposite. Connect your wallet, tap the mic (or type if you’re in a quiet room), and **talk to Solana** the way you’d talk to someone who actually works for you—check what you hold, hear prices in dollars, quote a swap, send to an address, and **hear the answer** instead of parsing another modal.
+**Voice-first Solana assistant** · real balances, quotes, swaps & sends · your keys, your chain
 
-That’s the product: **voice-first, wallet-native, built for real transfers** on Solana—not a slide deck with a fake “AI wallet” that never signs anything.
+[![Solana](https://img.shields.io/badge/Solana-wallet--native-9945FF?style=flat-square&logo=solana&logoColor=white)](https://solana.com)
+[![Jupiter](https://img.shields.io/badge/Jupiter-swaps%20%26%20prices-C7F284?style=flat-square&color=1A1A1A)](https://jup.ag)
+[![TanStack Start](https://img.shields.io/badge/TanStack-Start-005EB8?style=flat-square)](https://tanstack.com/start)
 
----
+<br/>
 
-## The problem we’re solving
+</div>
 
-People leave value on the table because using it is exhausting. Copy-paste errors, wrong networks, jargon stacked on jargon. Mobile makes it worse: you’re not going to squint through Jupiter routes on a bike rack.
-
-VOCA meets you where you already are: **spoken intent → clear confirmation → you approve**. The assistant stays **short** on purpose—this is built for **ears**, not blog posts—so you can use it while you’re doing something else.
-
----
-
-## What you get
-
-**Voice end to end.** You speak; speech becomes text; an agent reasons over your actual wallet; the reply streams back and is read aloud. If you’d rather not use the mic, the text box runs the **same** session—no “the keyboard forgot what the mic just said.”
-
-**A portfolio you can glance at and drill into.** A hero view of where you stand, a clear read on which chain you’re connected to, and a token grid with live context so you’re not flying blind before you say “send five USDC.”
-
-**Balances and prices that mean something.** Ask what you’re holding or what a symbol is worth; VOCA pulls from your RPC and Jupiter pricing so answers come back in **human amounts** and **USD** when the data is there—not raw lamports and mystery mints.
-
-**Swaps that don’t ambush you.** The agent quotes first, reads the trade in plain language, and only executes after you **clearly** say to go ahead. Same discipline on sends: you get a path to verify before anything hits the chain.
-
-**Sends that survive real conversations.** You might say the amount in one breath and paste the address in the next. VOCA is wired so the agent **carries intent across turns** instead of resetting every message like a bad call center.
-
-**Memory that survives a refresh.** Your transcript sticks around locally; when you come back, the agent’s context is rebuilt from that history so follow-ups still make sense. When you want a clean slate, clear the conversation and you’re reset—UI, storage, and agent state together.
-
-**Optional on-chain footprint.** Behind the scenes there’s an Anchor program for platform config, per-wallet “agents” with spending limits, and interaction logging when you wire it up—so you’re not locked into “trust our server logs only” if you want a verifiable story later.
+> Crypto wasn’t built for thumbs-only typing at a stoplight—or for memorizing forty-character addresses. **VOCA** is the layer that sits *between* you and the chain: you say what you want, get a short answer in plain language (and in your ears), then **you** approve what actually moves.
 
 ---
 
-## Under the hood (without drowning you)
+## At a glance
 
-Your keys stay in your wallet. VOCA uses the standard Solana wallet adapter, Jupiter for quotes and prices, and Groq for fast streaming chat plus Whisper for transcription. ElevenLabs gives the voice output its body. Server routes hold the API keys so the browser isn’t littered with secrets—just normal product hygiene.
-
-If you’re shipping or auditing: the repo is a **TanStack Start** app (React, Vite), Zustand for UI state, and `contracts/` plus `npm run sync` to keep the on-chain interface and TypeScript client in lockstep.
+| | |
+|:---|:---|
+| **Speak or type** | Same brain for mic and keyboard—no split personality. |
+| **Live portfolio** | SOL & SPL balances, USD where Jupiter has a price. |
+| **Swaps & sends** | Quote first, confirm in human words, execute only after you say so. |
+| **Stays with you** | Chat persists; agent context survives a refresh. |
+| **Optional on-chain** | Anchor program + IDL sync for logging & limits when you turn it on. |
 
 ---
 
-## Run it
+## The itch we’re scratching
+
+Most wallets still feel like **spreadsheets with extra steps**. You’re expected to read dense UI, copy long strings, and mentally juggle mints and networks—on a phone, at night, while distracted.
+
+VOCA is built for a different rhythm:
+
+1. **Intent** — “What do I have?” “Swap half a SOL to USDC.” “Send five bucks in USDC to this address.”
+2. **Clarity** — Replies are **short** on purpose; this product is tuned for **listening**, not scrolling.
+3. **Control** — Nothing hits Solana until you’ve seen the path and **explicitly** gone ahead.
+
+---
+
+## What you can do today
+
+### Voice loop
+
+Push-to-talk → transcription → streaming reply → spoken audio. **Groq** runs chat and Whisper; **ElevenLabs** gives the reply a voice. Provider keys live in **server routes**, not in client bundles.
+
+### Wallet-native money moves
+
+This is not a mocked “chat only” shell:
+
+- **Balances** — your RPC, SOL + SPL token accounts.
+- **Prices** — Jupiter, mint-level **USD**.
+- **Swaps** — Jupiter quote → swap transaction → **you sign** with Phantom / Solflare.
+- **Sends** — SOL and SPL transfers on the same signing path.
+
+### Conversation memory
+
+Transcript **persists locally**; after a refresh, agent context is **rehydrated** from that history. **Clear** resets UI, storage, and the model session together.
+
+### Optional on-chain layer (Anchor)
+
+The **`contracts/`** workspace is the real program; **`npm run sync`** drops the **IDL** into the frontend. Flip on `VITE_VOCA_CONFIG_AUTHORITY` and `VITE_VOCA_AGENT_NONCE` only when you want interaction logging and agent PDAs—**everything above works without them.**
+
+---
+
+## Solana integration (technical)
+
+VOCA runs **in the browser** against Solana using:
+
+- **`@solana/wallet-adapter-react`** — `ConnectionProvider` + Phantom / Solflare; user signs everything.
+- **`@solana/web3.js`** & **`@solana/spl-token`** — RPC reads, SOL/SPL sends, transaction building.
+- **Jupiter** — Price API for USD; quote/swap API for routed swaps into a **versioned transaction** you approve.
+- **`@coral-xyz/anchor`** — optional: program client from synced **IDL**, program id from IDL or `VITE_VOCA_PROGRAM_ID`.
+
+**RPC** resolves from `VITE_SOLANA_RPC_URL` / `SOLANA_RPC_URL`, optional **local validator** (`VITE_USE_LOCAL_SOLANA=1`), otherwise **public devnet**. Cluster label in the UI reflects what you’re connected to.
+
+Server routes (`/api/chat`, `/api/stt`, `/api/voice-config`) handle **AI and voice only**—they never custody keys or sign for you.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph client [Browser]
+    W[Wallet adapter]
+    A[Agent + tools]
+    UI[React UI]
+    UI --> W
+    A --> W
+  end
+  subgraph edge [Your host]
+    API["/api — Groq + ElevenLabs config"]
+  end
+  subgraph chain [Solana ecosystem]
+    RPC[JSON-RPC]
+    JUP[Jupiter]
+  end
+  UI --> API
+  A --> API
+  W --> RPC
+  A --> JUP
+```
+
+---
+
+## Repo layout
+
+```
+VOCA/
+├── frontend/          # TanStack Start, Vite, all UI + /api routes
+├── contracts/         # Anchor program (IDL → synced into frontend)
+├── scripts/sync.mjs   # IDL copy after `anchor build`
+└── README.md
+```
+
+Handy scripts from the **repo root**:
+
+| Command | What it does |
+|:--------|:-------------|
+| `npm run dev` | Dev server (`frontend`) |
+| `npm run build` | Production build (Cloudflare-shaped by default) |
+| `npm run ci` | Lint + build (frontend) |
+| `npm run sync` | Refresh IDL in `frontend` after building contracts |
+
+---
+
+## Run locally
 
 ```bash
 npm install --prefix frontend
 cd frontend && npm run env:init
 ```
 
-Fill in `frontend/.env` from `.env.example`—at minimum **Groq** (chat + speech-to-text) and **ElevenLabs** (voice replies). Then:
+Edit **`frontend/.env`** (start from **`.env.example`**). Minimum for the full experience:
+
+| Variable | Role |
+|:---------|:-----|
+| `GROQ_API_KEY` | Chat streaming + speech-to-text |
+| `ELEVENLABS_API_KEY` | Text-to-speech |
+| `ELEVENLABS_VOICE_ID` | Voice selection |
+
+Then:
 
 ```bash
 cd .. && npm run dev
 ```
 
-Working on-chain program features? Build in `contracts/`, then `npm run sync` from the repo root so the frontend picks up the latest IDL.
+IDL sync after `anchor build` in `contracts/`:
+
+```bash
+npm run sync
+```
 
 ---
 
-## A word of care
+## Deploy
 
-VOCA moves real assets on whatever cluster you point it at. Use devnet for experiments, read confirmations before you approve on mainnet, and treat production hardening (audits, legal, risk limits) as non-optional if you take this beyond personal use.
+### Vercel
+
+Vercel sets `VERCEL=1` during build so the app uses **Nitro** (TanStack’s supported path there). **Root directory must be `frontend`.** Add the same env vars as in `.env.example`. Local check:
+
+```bash
+cd frontend && npm run build:vercel
+```
+
+### Cloudflare / Wrangler
+
+Default **`npm run build`** in `frontend` targets the **Cloudflare** Vite plugin and `dist/server` worker output—use your existing Wrangler flow.
 
 ---
 
-Built on **Solana**, **Jupiter**, **Groq**, **ElevenLabs**, and **Anchor** where the chain piece matters.
+## Safety
+
+VOCA can move **real assets** on whatever cluster your RPC points to. Use **devnet** for experiments; on **mainnet**, read every confirmation. Production use deserves audits, legal review, and explicit risk controls—not just a slick UI.
+
+---
+
+## Stack
+
+TanStack Start · React · Vite · Tailwind · Zustand · Solana web3.js · Jupiter · Groq · ElevenLabs · Anchor (optional)
+
+---
+
+<div align="center">
+
+**VOCA** — *less terminal, more conversation.*
+
+</div>

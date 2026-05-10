@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
+import { nitro } from "nitro/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
@@ -67,12 +68,17 @@ export default defineConfig(async ({ command, mode }) => {
     devServerFnErrorLogger(),
   ];
 
+  // Vercel: Nitro preset (official TanStack Start path). Otherwise: Cloudflare Worker bundle.
   if (command === "build") {
-    plugins.push(
-      cloudflare({
-        viteEnvironment: { name: "ssr" },
-      }),
-    );
+    if (process.env.VERCEL === "1") {
+      plugins.push(nitro());
+    } else {
+      plugins.push(
+        cloudflare({
+          viteEnvironment: { name: "ssr" },
+        }),
+      );
+    }
   }
 
   plugins.push(

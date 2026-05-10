@@ -8,6 +8,8 @@ import { findAgentPda, findConfigPda } from "@/lib/voca/pdas";
 export type VocaChainState = {
   /** Whether env points at a config authority + agent nonce to read on-chain. */
   envConfigured: boolean;
+  /** One of authority/nonce set but not both — show fix hint only in that case. */
+  partialEnv: boolean;
   /** Human-readable config status on the current RPC, or null if not queried. */
   configStatus: string | null;
   /** Agent name / state, or null. */
@@ -24,6 +26,7 @@ export function useVocaChain(): VocaChainState {
   const auth = vocaConfigAuthority();
   const nonce = vocaAgentNonce();
   const envConfigured = auth !== null && nonce !== null;
+  const partialEnv = (auth !== null) !== (nonce !== null);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,5 +75,5 @@ export function useVocaChain(): VocaChainState {
     nonce === null ? "" : nonce.toString(),
   ]);
 
-  return { envConfigured, configStatus, agentLine };
+  return { envConfigured, partialEnv, configStatus, agentLine };
 }
