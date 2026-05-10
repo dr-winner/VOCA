@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { agentChatSession } from "@/lib/agent-chat-session";
 
 export type ChatMessage = {
   id: string;
@@ -33,23 +35,38 @@ type State = {
   updateMessage: (id: string, patch: Partial<ChatMessage>) => void;
   setStatus: (s: AgentStatus) => void;
   setInputLevel: (n: number) => void;
+  /** Clears UI transcript, persisted storage, and Groq session history. */
   clear: () => void;
 };
 
-export const useVocaStore = create<State>((set) => ({
-  messages: [],
-  status: "idle",
-  inputLevel: 0,
-  addMessage: (m) => {
-    const id = crypto.randomUUID();
-    set((s) => ({ messages: [...s.messages, { ...m, id, ts: Date.now() }] }));
-    return id;
-  },
-  updateMessage: (id, patch) =>
-    set((s) => ({
-      messages: s.messages.map((m) => (m.id === id ? { ...m, ...patch } : m)),
-    })),
-  setStatus: (status) => set({ status }),
-  setInputLevel: (n) => set({ inputLevel: n }),
-  clear: () => set({ messages: [] }),
-}));
+export const useVocaStore = create<State>()(
+  persist(
+    (set) => ({
+      messages: [],
+      status: "idle",
+      inputLevel: 0,
+      addMessage: (m) => {
+        const id = crypto.randomUUID();
+        set((s) => ({ messages: [...s.messages, { ...m, id, ts: Date.now() }] }));
+        return id;
+      },
+      updateMessage: (id, patch) =>
+        set((s) => ({
+          messages: s.messages.map((m) => (m.id === id ? { ...m, ...patch } : m)),
+        })),
+      setStatus: (status) => set({ status }),
+      setInputLevel: (n) => set({ inputLevel: n }),
+      clear: () => {
+        agentChatSession.reset();
+        set({ messages: [], status: "idle", inputLevel: 0 });
+      },
+    }),
+    {
+      name: "voca-chat-v1",
+      version: 1,
+      storage: createJSONStorage(() => localStorage),
+      partialize: (s) => ({ messages: s.messages }),
+      skipHydration: true,
+    },
+  ),
+);

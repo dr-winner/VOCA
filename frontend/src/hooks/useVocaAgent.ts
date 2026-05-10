@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { useVoiceRecorder } from "./useVoiceRecorder";
 import { useVocaStore } from "@/lib/store";
 import { ElevenLabsTTS } from "@/lib/voice/elevenlabs";
-import { VOCA_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { VOCA_TOOLS } from "@/lib/ai/tools";
 import { streamChat } from "@/lib/ai/stream";
 import { fetchHoldings } from "@/lib/balances";
@@ -14,27 +13,13 @@ import { lookupToken } from "@/lib/tokens";
 import { PublicKey } from "@solana/web3.js";
 import { tryLogVocaSend, tryLogVocaSwap } from "@/lib/voca/interaction-log";
 import { stripLeakedToolXml } from "@/lib/chat-sanitize";
-
-type ChatTurn = {
-  role: "system" | "user" | "assistant" | "tool";
-  content: string | null;
-  tool_calls?: Array<{
-    id: string;
-    type: "function";
-    function: { name: string; arguments: string };
-  }>;
-  tool_call_id?: string;
-  name?: string;
-};
+import { agentChatSession } from "@/lib/agent-chat-session";
 
 export function useVocaAgent() {
   const { connection } = useConnection();
   const wallet = useWallet();
   const anchorWallet = useAnchorWallet();
   const ttsRef = useRef<ElevenLabsTTS | null>(null);
-  const historyRef = useRef<ChatTurn[]>([
-    { role: "system", content: VOCA_SYSTEM_PROMPT },
-  ]);
   const setStatus = useVocaStore((s) => s.setStatus);
   const addMessage = useVocaStore((s) => s.addMessage);
   const updateMessage = useVocaStore((s) => s.updateMessage);
@@ -221,15 +206,15 @@ export function useVocaAgent() {
 
   const runConversation = useCallback(
     async (assistantMsgId: string) => {
-      // up to 2 tool-call rounds
-      for (let round = 0; round < 3; round++) {
+      // Multi-step tool flows (send/swap often need several assistant→tool rounds)
+      for (let round = 0; round < 6; round++) {
         setStatus("thinking");
         let assistantText = "";
         let ttsSanitizedLen = 0;
         const tts = await speakStream();
         const { toolCalls } = await streamChat(
           "/api/chat",
-          { messages: historyRef.current, tools: VOCA_TOOLS },
+          { messages: agentChatSession.turns, tools: VOCA_TOOLS },
           {
             onTextDelta: (t) => {
               assistantText += t;
@@ -246,13 +231,13 @@ export function useVocaAgent() {
 
         if (toolCalls.length === 0) {
           tts.done();
-          historyRef.current.push({ role: "assistant", content: assistantText });
+          agentChatSession.turns.push({ role: "assistant", content: assistantText });
           setStatus("speaking");
           return;
         }
 
         // Push assistant turn with tool_calls
-        historyRef.current.push({
+        agentChatSession.turns.push({
           role: "assistant",
           content: assistantText || null,
           tool_calls: toolCalls.map((t) => ({
@@ -269,7 +254,7 @@ export function useVocaAgent() {
           let parsed: any = {};
           try { parsed = JSON.parse(tc.args || "{}"); } catch { /* */ }
           const result = await runTool(tc.name, parsed);
-          historyRef.current.push({
+          agentChatSession.turns.push({
             role: "tool",
             tool_call_id: tc.id,
             name: tc.name,
@@ -286,7 +271,7 @@ export function useVocaAgent() {
       const trimmed = text.trim();
       if (!trimmed) return;
       addMessage({ role: "user", text: trimmed });
-      historyRef.current.push({ role: "user", content: trimmed });
+      agentChatSession.turns.push({ role: "user", content: trimmed });
       const assistantId = addMessage({ role: "assistant", text: "" });
       try {
         await runConversation(assistantId);

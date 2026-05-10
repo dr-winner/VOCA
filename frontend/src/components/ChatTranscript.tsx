@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, CheckCircle2 } from "lucide-react";
+import { ExternalLink, CheckCircle2, Trash2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useVocaStore, type ChatMessage } from "@/lib/store";
 import { stripLeakedToolXml } from "@/lib/chat-sanitize";
@@ -52,14 +52,26 @@ function Bubble({ m }: { m: ChatMessage }) {
 
 export function ChatTranscript() {
   const messages = useVocaStore((s) => s.messages);
+  const clear = useVocaStore((s) => s.clear);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
   return (
     <div className="glass rounded-3xl p-5 h-[40vh] md:h-[44vh]">
-      <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground mb-3">
-        Conversation
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Conversation</div>
+        {messages.length > 0 && (
+          <button
+            type="button"
+            onClick={() => clear()}
+            className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            title="Clear saved chat"
+          >
+            <Trash2 className="size-3.5" />
+            Clear
+          </button>
+        )}
       </div>
       <div ref={ref} className="h-[calc(100%-2rem)] overflow-y-auto pr-1 space-y-2.5">
         {messages.length === 0 && (
